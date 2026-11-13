@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Remove INTERNET permissions that were transitively included by mediapipe.
+         The app has no network code and the disclosure states "no network access".
+         Removing these permissions keeps the manifest consistent with actual behavior. -->
+    <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />
+
+    <!-- Standard permissions (granted at install time) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Foreground service type permissions required for Android 14+ (startForeground throws SecurityException without type) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- Dangerous permissions (runtime-granted) -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- Notification permission, runtime-granted on Android 13+ -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Overlay permission for floating panel -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- Hardware declarations: allow installation on devices without the hardware -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="false" />
+
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:localeConfig="@xml/locales_config"
+        android:theme="@style/Theme.PIF">
+
+        <!-- Lock to portrait mode. Gesture coordinates are normalized by screen size at draw time;
+             rotating would swap width/height and cause saved coordinates to misalign with execution points. -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Settings: theme (system/light/dark) and language (system/zh/en) switching -->
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- Action library management -->
+        <activity
+            android:name=".ActionsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- Queue management -->
+        <activity
+            android:name=".QueueActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- Trigger rules configuration: maps gestures or voice commands to actions or queues. -->
+        <activity
+            android:name=".RulesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- Execution history diagnostics page -->
+        <activity
+            android:name=".ExecutionLogActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- AppCompat language persistence: keeps locale across process death (API < 33). -->
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
+
+        <!-- Main foreground service: runs vision/voice pipelines and queue scheduling.
+             Uses specialUse FGS type for accessibility automation (requires PROPERTY_SPECIAL_USE_FGS_SUBTYPE). -->
+        <service
+            android:name=".service.MainForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="camera|microphone|specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="accessibility_automation_engine" />
+        </service>
+
+        <!-- Remove datatransport backend components that were transitively included by mediapipe.
+             The app does not use telemetry, so removing these avoids leaving unused services/receivers. -->
+        <service
+            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
+            tools:node="remove" />
+        <service
+            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
+            tools:node="remove" />
+        <receiver
+            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
+            tools:node="remove" />
+
+        <!-- Accessibility service: simulates gestures via dispatchGesture / performGlobalAction -->
+        <service
+            android:name=".service.MyAccessibilityService"
+            android:exported="false"
+            android:label="@string/accessibility_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+    </application>
+</manifest>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark theme splash screen background: deeper blue to maintain brand identity -->
+    <color name="ic_launcher_background">#0D47A1</color>
+</resources>

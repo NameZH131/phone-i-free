@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  1. isAccessibilityTool must stay false: Play excludes "automation tools" from the accessibility-tool
+     category; declaring true would be a false declaration (only apps serving people with disabilities may set it).
+  2. Capabilities are minimized to actual use: this app only uses canPerformGestures (dispatchGesture / performGlobalAction).
+  3. canRetrieveWindowContent is not declared - the project never reads getRootInActiveWindow / AccessibilityNodeInfo,
+     so the default false applies.
+  4. accessibilityEventTypes is not declared - onAccessibilityEvent is an empty implementation; this service handles no events.
+  5. description only feeds the system accessibility page; it cannot replace in-app prominent disclosure and consent.
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:canPerformGestures="true"
+    android:description="@string/accessibility_service_description"
+    android:notificationTimeout="100" />

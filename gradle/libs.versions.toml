@@ -1,0 +1,55 @@
+[versions]
+agp = "8.13.2"
+kotlin = "2.4.20"
+composeBom = "2026.06.01"
+coreKtx = "1.18.0"
+appcompat = "1.8.0"
+activityCompose = "1.13.0"
+datastore = "1.2.1"
+coroutines = "1.11.0"
+
+# Pinned to versions compatible with the current toolchain:
+# composeBom/coreKtx intentionally stay below the latest: BOM 2026.09.00 (Compose 1.12.x) and
+# core-ktx 1.19.0 require compileSdk 37 + AGP 9.1+ (per AAR metadata), while the local toolchain is
+# AGP 8.13.2 + Gradle 8.14.3 + compileSdk 36, so take the newest versions supporting compileSdk 36:
+# compose 1.11.4 needs compileSdk 35 + AGP 8.6.0; core-ktx 1.18.0 needs 36 + AGP 8.9.1.
+camerax = "1.6.2"
+mediapipeVision = "1.0.0"
+room = "2.8.5"
+ksp = "2.3.12"
+lifecycleService = "2.10.0"
+# Unit tests (pickRule matching, keyword parsing)
+junit = "4.13.2"
+# Porcupine free tier shut down (AccessKey expiry, no non-commercial tier); the voice pipeline
+# therefore uses sherpa-onnx KeywordSpotter (JitPack, Apache-2.0, no license server)
+sherpaOnnx = "v1.13.7"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "camerax" }
+androidx-camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "camerax" }
+androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "camerax" }
+androidx-lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycleService" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleService" }
+mediapipe-tasks-vision = { group = "com.google.mediapipe", name = "tasks-vision", version.ref = "mediapipeVision" }
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
+compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+sherpa-onnx = { group = "com.github.k2-fsa.sherpa-onnx", name = "sherpa-onnx", version.ref = "sherpaOnnx" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
